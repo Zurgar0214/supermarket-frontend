@@ -1,66 +1,97 @@
 # Supermarket Frontend SPA
 
-Este proyecto es una aplicación frontend tipo Single Page Application (SPA) para un dashboard de administración de supermercado, construida con React y Vite.
+Frontend tipo SPA para administrar un supermercado con React + Vite. Esta versión ya está conectada con el backend para los módulos iniciales de:
 
-## 🏗 Diseño y Arquitectura
+- Usuarios
+- Proveedores
+- Productos
 
-El proyecto sigue una arquitectura limpia orientada a componentes, sin dependencias de librerías de UI externas (Bootstrap, Tailwind, etc.), utilizando únicamente CSS Vanilla para un diseño a medida, ligero y profesional.
+## Requisitos
 
-**Estructura de Carpetas:**
+- Node.js 18 o superior
+- Backend ejecutándose normalmente en `http://localhost:3000`
+
+## Instalación
+
+```bash
+npm install
+npm run dev
+```
+
+Luego abre la URL que muestre Vite, normalmente:
+
+```text
+http://localhost:5173
+```
+
+## Conexión con el backend
+
+Por defecto, el frontend consume rutas relativas `/api`. En desarrollo, `vite.config.js` tiene un proxy que envía esas peticiones hacia:
+
+```text
+http://localhost:3000
+```
+
+Por ejemplo:
+
+```text
+/api/products  ->  http://localhost:3000/api/products
+/api/providers ->  http://localhost:3000/api/providers
+/api/users     ->  http://localhost:3000/api/users
+```
+
+Si necesitas conectarte directamente a otra URL, crea un archivo `.env` tomando como base `.env.example`:
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+## Módulos conectados
+
+### Productos
+
+Propiedades usadas según el backend:
+
+- `id`
+- `name`
+- `description`
+- `price`
+- `stock`
+- `providerId`
+- `provider.name` cuando el backend lo incluye en la respuesta
+
+### Proveedores
+
+Propiedades usadas según el backend:
+
+- `id`
+- `name`
+- `phone`
+- `email`
+- `city`
+
+### Usuarios
+
+Propiedades usadas según el backend:
+
+- `id`
+- `name`
+- `email`
+- `role`
+- `isActive`
+
+La contraseña se envía al crear usuario. Al editar, se deja opcional para no cambiarla accidentalmente.
+
+## Estructura principal
 
 ```text
 src/
-├── components/          # Componentes UI reutilizables (Modales, Diálogos de confirmación, etc)
-├── layouts/             # Contenedores estructurales (DashboardLayout)
-├── pages/               # Vistas principales de la aplicación
-├── global.css           # Sistema de diseño global (variables, reset, utilidades, layout)
-├── App.jsx              # Enrutador basado en estado y contenedor principal
-└── main.jsx             # Punto de entrada de React
+├── components/          # Modales y diálogos reutilizables
+├── layouts/             # DashboardLayout
+├── pages/               # Vistas principales
+├── services/            # Conexión Axios con backend
+├── utils/               # Formateadores y helpers
+├── global.css           # Estilos globales
+├── App.jsx
+└── main.jsx
 ```
-
-### 🛣 Rutas (Navegación Basada en Estado)
-Para mantener las dependencias al mínimo, la aplicación utiliza un **enrutador manual basado en estado** (`useState` en `App.jsx`), en lugar de `react-router-dom`. 
-
-Las vistas disponibles son:
-- **Dashboard**: Panel principal con tarjetas de resumen del sistema.
-- **Products**: Gestión completa de inventario (CRUD). Muestra la lista de productos con insignias de stock.
-- **Providers**: Administración de proveedores del supermercado.
-- **Sales**: Registro y consulta de transacciones de venta.
-- **Users**: Panel de control para roles y acceso de usuarios.
-
-## 🚀 Requisitos Previos
-
-Asegúrate de tener instalado en tu sistema:
-- [Node.js](https://nodejs.org/) (Versión 18 o superior recomendada)
-- Un gestor de paquetes (`npm` viene con Node.js, pero puedes usar `yarn` o `pnpm`)
-
-## 🛠 Instalación y Configuración
-
-Sigue estos pasos para levantar el entorno de desarrollo localmente:
-
-1. **Clona o navega al directorio del proyecto**
-   Asegúrate de estar ubicado en la carpeta raíz del proyecto frontend de supermercado:
-   ```bash
-   cd supermarket-frontend
-   ```
-
-2. **Instala las dependencias**
-   ```bash
-   npm install
-   ```
-
-3. **Inicia el servidor de desarrollo**
-   Vite provee un servidor de inicio muy rápido. Ejecuta:
-   ```bash
-   npm run dev
-   ```
-
-4. **Accede a la aplicación**
-   Abre tu navegador web y dirígete a la URL que indica la consola, normalmente:
-   [http://localhost:5173/](http://localhost:5173/)
-
-## 🎨 Particularidades Técnicas
-
-- **Diseño Responsive:** La plataforma y el menú lateral (`Sidebar`) están completamente optimizados para PC y dispositivos móviles.
-- **Formularios con Validación Inline:** Formularios controlados por estado (`ProductModal.jsx`) validando en tiempo real sin recargas.
-- **Integración API (Pendiente):** Actualmente los datos mostrados son `MOCK` (datos de prueba locales) para facilitar el diseño y maquetación inicial. Las llamadas asíncronas para leer y escribir datos al Backend estarán ubicadas en la capa correspondiente en fases posteriores de desarrollo.

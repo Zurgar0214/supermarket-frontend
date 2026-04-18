@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const EMPTY_FORM = {
   name: '',
@@ -8,19 +8,18 @@ const EMPTY_FORM = {
   providerId: '',
 };
 
-const ProductModal = ({ isOpen, onClose, onSave, product, providers }) => {
+const ProductModal = ({ isOpen, onClose, onSave, product, providers = [], saving = false }) => {
   const [form, setForm] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
 
-  // Pre-fill form when editing
   useEffect(() => {
     if (product) {
       setForm({
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        stock: product.stock,
-        providerId: product.providerId,
+        name: product.name || '',
+        description: product.description || '',
+        price: product.price ?? '',
+        stock: product.stock ?? '',
+        providerId: product.providerId || '',
       });
     } else {
       setForm(EMPTY_FORM);
@@ -32,34 +31,37 @@ const ProductModal = ({ isOpen, onClose, onSave, product, providers }) => {
 
   const validate = () => {
     const newErrors = {};
-    if (!form.name.trim())         newErrors.name        = 'Name is required.';
-    if (!form.description.trim())  newErrors.description = 'Description is required.';
-    if (form.price === '' || isNaN(Number(form.price)) || Number(form.price) < 0)
-      newErrors.price = 'Enter a valid price (≥ 0).';
-    if (form.stock === '' || isNaN(Number(form.stock)) || !Number.isInteger(Number(form.stock)) || Number(form.stock) < 0)
-      newErrors.stock = 'Enter a valid integer stock (≥ 0).';
-    if (!form.providerId)          newErrors.providerId  = 'Select a provider.';
+    if (!form.name.trim()) newErrors.name = 'El nombre es obligatorio.';
+    if (form.price === '' || Number.isNaN(Number(form.price)) || Number(form.price) <= 0) {
+      newErrors.price = 'Ingresa un precio mayor a 0.';
+    }
+    if (form.stock === '' || Number.isNaN(Number(form.stock)) || !Number.isInteger(Number(form.stock)) || Number(form.stock) < 0) {
+      newErrors.stock = 'Ingresa un stock entero igual o mayor a 0.';
+    }
+    if (!form.providerId) newErrors.providerId = 'Selecciona un proveedor.';
     return newErrors;
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
+
     onSave({
-      ...form,
-      price: parseFloat(form.price),
-      stock: parseInt(form.stock, 10),
-      providerId: parseInt(form.providerId, 10),
+      name: form.name.trim(),
+      description: form.description.trim(),
+      price: Number(form.price),
+      stock: Number(form.stock),
+      providerId: form.providerId,
     });
   };
 
@@ -67,47 +69,41 @@ const ProductModal = ({ isOpen, onClose, onSave, product, providers }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>{product ? 'Edit Product' : 'Add New Product'}</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Close">×</button>
+          <h3>{product ? 'Editar producto' : 'Crear producto'}</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Cerrar">×</button>
         </div>
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="modal-body">
-
-            {/* Name */}
             <div className="form-group">
-              <label htmlFor="product-name">Product Name *</label>
+              <label htmlFor="product-name">Nombre *</label>
               <input
                 id="product-name"
                 type="text"
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                placeholder="e.g. Organic Whole Milk 1L"
+                placeholder="Ej. Leche entera 1L"
                 className={errors.name ? 'input-error' : ''}
               />
               {errors.name && <span className="form-error">{errors.name}</span>}
             </div>
 
-            {/* Description */}
             <div className="form-group">
-              <label htmlFor="product-description">Description *</label>
+              <label htmlFor="product-description">Descripción</label>
               <textarea
                 id="product-description"
                 name="description"
                 value={form.description}
                 onChange={handleChange}
-                placeholder="Brief product description..."
+                placeholder="Descripción del producto"
                 rows={3}
-                className={errors.description ? 'input-error' : ''}
               />
-              {errors.description && <span className="form-error">{errors.description}</span>}
             </div>
 
-            {/* Price & Stock side by side */}
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="product-price">Price ($) *</label>
+                <label htmlFor="product-price">Precio *</label>
                 <input
                   id="product-price"
                   type="number"
@@ -115,7 +111,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, providers }) => {
                   value={form.price}
                   onChange={handleChange}
                   placeholder="0.00"
-                  min="0"
+                  min="0.01"
                   step="0.01"
                   className={errors.price ? 'input-error' : ''}
                 />
@@ -123,7 +119,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, providers }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="product-stock">Stock (units) *</label>
+                <label htmlFor="product-stock">Stock *</label>
                 <input
                   id="product-stock"
                   type="number"
@@ -139,9 +135,8 @@ const ProductModal = ({ isOpen, onClose, onSave, product, providers }) => {
               </div>
             </div>
 
-            {/* Provider */}
             <div className="form-group">
-              <label htmlFor="product-provider">Provider *</label>
+              <label htmlFor="product-provider">Proveedor *</label>
               <select
                 id="product-provider"
                 name="providerId"
@@ -149,19 +144,18 @@ const ProductModal = ({ isOpen, onClose, onSave, product, providers }) => {
                 onChange={handleChange}
                 className={errors.providerId ? 'input-error' : ''}
               >
-                <option value="">— Select a provider —</option>
-                {providers.map((p) => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
+                <option value="">Selecciona un proveedor</option>
+                {providers.map((provider) => (
+                  <option key={provider.id} value={provider.id}>{provider.name}</option>
                 ))}
               </select>
               {errors.providerId && <span className="form-error">{errors.providerId}</span>}
             </div>
-
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="secondary" onClick={onClose}>Cancel</button>
-            <button type="submit">{product ? 'Save Changes' : 'Add Product'}</button>
+            <button type="button" className="secondary" onClick={onClose} disabled={saving}>Cancelar</button>
+            <button type="submit" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
           </div>
         </form>
       </div>

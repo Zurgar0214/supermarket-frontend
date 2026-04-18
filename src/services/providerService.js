@@ -1,8 +1,8 @@
 import api from './api';
 
-const ENDPOINT = '/products';
+const ENDPOINT = '/providers';
 
-export const productService = {
+export const providerService = {
   getAll: async () => {
     const response = await api.get(ENDPOINT);
     return response.data;
@@ -13,13 +13,13 @@ export const productService = {
     return response.data;
   },
 
-  create: async (productData) => {
-    const response = await api.post(ENDPOINT, productData);
+  create: async (providerData) => {
+    const response = await api.post(ENDPOINT, providerData);
     return response.data;
   },
 
-  update: async (id, productData) => {
-    const response = await api.put(`${ENDPOINT}/${id}`, productData);
+  update: async (id, providerData) => {
+    const response = await api.put(`${ENDPOINT}/${id}`, providerData);
     return response.data;
   },
 
