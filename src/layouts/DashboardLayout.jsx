@@ -1,34 +1,40 @@
 import { useState } from 'react';
 
+const pageTitles = {
+  dashboard: 'Panel principal',
+  products: 'Productos',
+  providers: 'Proveedores',
+  sales: 'Ventas',
+  users: 'Usuarios',
+};
+
 const DashboardLayout = ({ children, activePage, setActivePage }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard' },
-    { id: 'products', label: 'Products' },
-    { id: 'providers', label: 'Providers' },
-    { id: 'sales', label: 'Sales' },
-    { id: 'users', label: 'Users' }
+    { id: 'dashboard', label: 'Panel principal' },
+    { id: 'products', label: 'Productos' },
+    { id: 'providers', label: 'Proveedores' },
+    { id: 'sales', label: 'Ventas' },
+    { id: 'users', label: 'Usuarios' },
   ];
 
   const handleNavClick = (id) => {
     setActivePage(id);
-    setIsSidebarOpen(false); // Close sidebar on mobile
+    setIsSidebarOpen(false);
   };
 
   return (
     <div className="dashboard-container">
-      {/* Sidebar Overlay for Mobile */}
       {isSidebarOpen && (
-        <div 
+        <div
           style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 40 }}
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
       <aside className={`dashboard-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        <h2>🛒 Supermarket</h2>
+        <h2>🛒 MarketSoft</h2>
         <nav>
           {navItems.map((item) => (
             <button
@@ -42,23 +48,21 @@ const DashboardLayout = ({ children, activePage, setActivePage }) => {
         </nav>
       </aside>
 
-      {/* Main Content Area */}
       <div className="dashboard-content">
         <header className="dashboard-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <button 
+            <button
               className="mobile-toggle"
               onClick={() => setIsSidebarOpen(true)}
+              aria-label="Abrir menú"
             >
               ☰
             </button>
-            <h3 style={{ margin: 0, textTransform: 'capitalize' }}>{activePage}</h3>
+            <h3 style={{ margin: 0 }}>{pageTitles[activePage] || 'Panel principal'}</h3>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Admin User</span>
-            <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--accent-color)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-              A
-            </div>
+            <span style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Administrador</span>
+            <div className="avatar">A</div>
           </div>
         </header>
 
