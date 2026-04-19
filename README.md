@@ -72,7 +72,7 @@ VITE_API_URL=http://localhost:3000/api
 
 ### Productos
 
-Propiedades usadas según el backend:
+Propiedades tomadas del backend:
 
 - `id`
 - `name`
@@ -84,7 +84,7 @@ Propiedades usadas según el backend:
 
 ### Proveedores
 
-Propiedades usadas según el backend:
+Propiedades tomadas del backend:
 
 - `id`
 - `name`
@@ -94,7 +94,7 @@ Propiedades usadas según el backend:
 
 ### Usuarios
 
-Propiedades usadas según el backend:
+Propiedades tomadas del backend:
 
 - `id`
 - `name`
@@ -102,7 +102,6 @@ Propiedades usadas según el backend:
 - `role`
 - `isActive`
 
-La contraseña se envía al crear usuario. Al editar, se deja opcional para no cambiarla accidentalmente.
 
 ## Tecnologías utilizadas
 
