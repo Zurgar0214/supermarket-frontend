@@ -1,10 +1,32 @@
 # Supermarket Frontend SPA
 
-Frontend tipo SPA para administrar un supermercado con React + Vite. Esta versión ya está conectada con el backend para los módulos iniciales de:
+## Integrantes
 
-- Usuarios
-- Proveedores
+- Juan Diego Ramírez Muñoz
+- Sandra Milena Ramos
+- Juan Diego Varón Valencia
+
+## Descripción
+
+Frontend tipo **Single Page Application (SPA)** para administrar un supermercado, desarrollado con **React** y empaquetado con **Vite**.
+
+## Arquitectura
+
+La aplicación sigue una arquitectura cliente-servidor donde el frontend consume la API REST del backend mediante **Axios**. La navegación entre vistas se gestiona con **React Router DOM**, permitiendo cambiar de módulo sin recargar la página. La interfaz responsiva está construida con **Bootstrap 5** a través de **react-bootstrap**.
+
+El proyecto se organiza en capas:
+
+- **Services**: Centraliza todas las llamadas HTTP al backend (Axios).
+- **Pages**: Vistas principales con lógica de estado y operaciones CRUD.
+- **Components**: Elementos reutilizables como modales y diálogos de confirmación.
+- **Layouts**: Estructura general del dashboard (sidebar, header, contenido).
+
+### Módulos
+
 - Productos
+- Proveedores
+- Usuarios
+- Ventas
 
 ## Requisitos
 
@@ -82,16 +104,24 @@ Propiedades usadas según el backend:
 
 La contraseña se envía al crear usuario. Al editar, se deja opcional para no cambiarla accidentalmente.
 
+## Tecnologías utilizadas
+
+- **React** 19
+- **Vite** 8
+- **Axios** — consumo de API REST
+- **React Router DOM** — navegación SPA
+- **Bootstrap 5 / react-bootstrap** — diseño responsivo
+
 ## Estructura principal
 
 ```text
 src/
-├── components/          # Modales y diálogos reutilizables
-├── layouts/             # DashboardLayout
-├── pages/               # Vistas principales
+├── components/          # Modales y diálogos reutilizables (react-bootstrap Modal)
+├── layouts/             # DashboardLayout con sidebar responsive (Offcanvas)
+├── pages/               # Vistas principales (Dashboard, Products, Providers, Users, Sales)
 ├── services/            # Conexión Axios con backend
 ├── utils/               # Formateadores y helpers
-├── global.css           # Estilos globales
-├── App.jsx
-└── main.jsx
+├── global.css           # Overrides mínimos sobre Bootstrap
+├── App.jsx              # Definición de rutas (React Router DOM)
+└── main.jsx             # Punto de entrada (BrowserRouter + Bootstrap CSS)
 ```

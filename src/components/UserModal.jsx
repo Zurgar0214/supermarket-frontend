@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 
 const EMPTY_FORM = {
   name: '',
@@ -26,8 +27,6 @@ const UserModal = ({ isOpen, onClose, onSave, user, saving = false }) => {
     }
     setErrors({});
   }, [user, isOpen]);
-
-  if (!isOpen) return null;
 
   const validate = () => {
     const newErrors = {};
@@ -71,86 +70,85 @@ const UserModal = ({ isOpen, onClose, onSave, user, saving = false }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>{user ? 'Editar usuario' : 'Crear usuario'}</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Cerrar">×</button>
-        </div>
+    <Modal show={isOpen} onHide={onClose} backdrop="static" centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{user ? 'Editar usuario' : 'Crear usuario'}</Modal.Title>
+      </Modal.Header>
+      <Form onSubmit={handleSubmit} noValidate>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="user-name">
+            <Form.Label>Nombre *</Form.Label>
+            <Form.Control
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Ej. Juan Pérez"
+              isInvalid={!!errors.name}
+            />
+            <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
+          </Form.Group>
 
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="modal-body">
-            <div className="form-group">
-              <label htmlFor="user-name">Nombre *</label>
-              <input
-                id="user-name"
-                name="name"
-                type="text"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Ej. Juan Pérez"
-                className={errors.name ? 'input-error' : ''}
-              />
-              {errors.name && <span className="form-error">{errors.name}</span>}
-            </div>
+          <Form.Group className="mb-3" controlId="user-email">
+            <Form.Label>Correo *</Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="usuario@correo.com"
+              isInvalid={!!errors.email}
+            />
+            <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+          </Form.Group>
 
-            <div className="form-group">
-              <label htmlFor="user-email">Correo *</label>
-              <input
-                id="user-email"
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="usuario@correo.com"
-                className={errors.email ? 'input-error' : ''}
-              />
-              {errors.email && <span className="form-error">{errors.email}</span>}
-            </div>
+          <Form.Group className="mb-3" controlId="user-password">
+            <Form.Label>Contraseña {user ? '(opcional)' : '*'}</Form.Label>
+            <Form.Control
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              placeholder={user ? 'Déjala vacía para no cambiarla' : 'Mínimo 6 caracteres'}
+              isInvalid={!!errors.password}
+            />
+            <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+          </Form.Group>
 
-            <div className="form-group">
-              <label htmlFor="user-password">Contraseña {user ? '(opcional)' : '*'}</label>
-              <input
-                id="user-password"
-                name="password"
-                type="password"
-                value={form.password}
-                onChange={handleChange}
-                placeholder={user ? 'Déjala vacía para no cambiarla' : 'Mínimo 6 caracteres'}
-                className={errors.password ? 'input-error' : ''}
-              />
-              {errors.password && <span className="form-error">{errors.password}</span>}
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="user-role">Rol</label>
-                <select id="user-role" name="role" value={form.role} onChange={handleChange}>
+          <Row className="mb-3">
+            <Col sm={6}>
+              <Form.Group controlId="user-role">
+                <Form.Label>Rol</Form.Label>
+                <Form.Select name="role" value={form.role} onChange={handleChange}>
                   <option value="user">Usuario</option>
                   <option value="admin">Administrador</option>
-                </select>
-              </div>
+                </Form.Select>
+              </Form.Group>
+            </Col>
 
-              <label className="checkbox-field" htmlFor="user-is-active">
-                <input
-                  id="user-is-active"
-                  name="isActive"
+            <Col sm={6} className="d-flex align-items-end">
+              <Form.Group controlId="user-is-active" className="mb-2">
+                <Form.Check
                   type="checkbox"
+                  name="isActive"
+                  label="Usuario activo"
                   checked={form.isActive}
                   onChange={handleChange}
                 />
-                Usuario activo
-              </label>
-            </div>
-          </div>
-
-          <div className="modal-footer">
-            <button type="button" className="secondary" onClick={onClose} disabled={saving}>Cancelar</button>
-            <button type="submit" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
-          </div>
-        </form>
-      </div>
-    </div>
+              </Form.Group>
+            </Col>
+          </Row>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onClose} disabled={saving}>
+            Cancelar
+          </Button>
+          <Button variant="primary" type="submit" disabled={saving}>
+            {saving ? 'Guardando...' : 'Guardar'}
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
   );
 };
 

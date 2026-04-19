@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Table, Button, Badge, Form, Alert } from 'react-bootstrap';
 import ConfirmDialog from '../components/ConfirmDialog';
 import UserModal from '../components/UserModal';
 import { userService } from '../services/userService';
@@ -99,18 +100,18 @@ const Users = () => {
 
   return (
     <div>
-      <div className="header-actions">
+      <div className="d-flex justify-content-between align-items-md-center flex-column flex-md-row mb-4 gap-3">
         <div>
-          <h2 style={{ marginBottom: '0.25rem' }}>Usuarios</h2>
-          <p style={{ margin: 0 }}>Administra los usuarios, roles y estado de acceso.</p>
+          <h2 className="mb-1 text-dark fw-bold">Usuarios</h2>
+          <p className="m-0 text-muted">Administra los usuarios, roles y estado de acceso.</p>
         </div>
-        <button onClick={openCreateModal}>+ Crear usuario</button>
+        <Button variant="primary" onClick={openCreateModal}>+ Crear usuario</Button>
       </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <Alert variant="danger">{error}</Alert>}
 
-      <div className="search-bar" style={{ marginBottom: '1rem' }}>
-        <input
+      <div className="mb-4">
+        <Form.Control
           type="text"
           placeholder="Buscar por nombre, correo, rol o estado"
           value={search}
@@ -118,41 +119,43 @@ const Users = () => {
         />
       </div>
 
-      <div className="table-container">
+      <div className="table-responsive bg-white rounded shadow-sm border">
         {loading ? (
-          <p className="empty-state">Cargando usuarios...</p>
+          <div className="text-center p-5 text-muted">Cargando usuarios...</div>
         ) : filteredUsers.length === 0 ? (
-          <p className="empty-state">No se encontraron usuarios.</p>
+          <div className="text-center p-5 text-muted">No se encontraron usuarios.</div>
         ) : (
-          <table>
-            <thead>
+          <Table hover className="m-0 align-middle">
+            <thead className="table-light">
               <tr>
-                <th>Nombre</th>
-                <th>Correo</th>
-                <th>Rol</th>
-                <th>Estado</th>
-                <th>Acciones</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Nombre</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Correo</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Rol</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Estado</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {filteredUsers.map((user) => (
                 <tr key={user.id}>
-                  <td style={{ fontWeight: 500 }}>{user.name}</td>
+                  <td className="fw-medium">{user.name}</td>
                   <td>{user.email}</td>
                   <td>{roleLabel[user.role] || user.role}</td>
                   <td>
-                    <span className={`badge ${user.isActive ? 'badge-success' : 'badge-danger'}`}>
+                    <Badge bg={user.isActive ? 'success' : 'danger'}>
                       {user.isActive ? 'Activo' : 'Inactivo'}
-                    </span>
+                    </Badge>
                   </td>
-                  <td className="actions-cell">
-                    <button className="secondary compact" onClick={() => openEditModal(user)}>Editar</button>
-                    <button className="danger compact" onClick={() => requestDelete(user)}>Eliminar</button>
+                  <td>
+                    <div className="d-flex gap-2">
+                      <Button variant="outline-secondary" size="sm" onClick={() => openEditModal(user)}>Editar</Button>
+                      <Button variant="outline-danger" size="sm" onClick={() => requestDelete(user)}>Eliminar</Button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
       </div>
 

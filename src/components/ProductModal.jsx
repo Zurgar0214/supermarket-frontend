@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 
 const EMPTY_FORM = {
   name: '',
@@ -26,8 +27,6 @@ const ProductModal = ({ isOpen, onClose, onSave, product, providers = [], saving
     }
     setErrors({});
   }, [product, isOpen]);
-
-  if (!isOpen) return null;
 
   const validate = () => {
     const newErrors = {};
@@ -66,46 +65,43 @@ const ProductModal = ({ isOpen, onClose, onSave, product, providers = [], saving
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>{product ? 'Editar producto' : 'Crear producto'}</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Cerrar">×</button>
-        </div>
+    <Modal show={isOpen} onHide={onClose} backdrop="static" centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{product ? 'Editar producto' : 'Crear producto'}</Modal.Title>
+      </Modal.Header>
 
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="modal-body">
-            <div className="form-group">
-              <label htmlFor="product-name">Nombre *</label>
-              <input
-                id="product-name"
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Ej. Leche entera 1L"
-                className={errors.name ? 'input-error' : ''}
-              />
-              {errors.name && <span className="form-error">{errors.name}</span>}
-            </div>
+      <Form onSubmit={handleSubmit} noValidate>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="product-name">
+            <Form.Label>Nombre *</Form.Label>
+            <Form.Control
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Ej. Leche entera 1L"
+              isInvalid={!!errors.name}
+            />
+            <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
+          </Form.Group>
 
-            <div className="form-group">
-              <label htmlFor="product-description">Descripción</label>
-              <textarea
-                id="product-description"
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                placeholder="Descripción del producto"
-                rows={3}
-              />
-            </div>
+          <Form.Group className="mb-3" controlId="product-description">
+            <Form.Label>Descripción</Form.Label>
+            <Form.Control
+              as="textarea"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              placeholder="Descripción del producto"
+              rows={3}
+            />
+          </Form.Group>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="product-price">Precio *</label>
-                <input
-                  id="product-price"
+          <Row className="mb-3">
+            <Col sm={6}>
+              <Form.Group controlId="product-price">
+                <Form.Label>Precio *</Form.Label>
+                <Form.Control
                   type="number"
                   name="price"
                   value={form.price}
@@ -113,15 +109,16 @@ const ProductModal = ({ isOpen, onClose, onSave, product, providers = [], saving
                   placeholder="0.00"
                   min="0.01"
                   step="0.01"
-                  className={errors.price ? 'input-error' : ''}
+                  isInvalid={!!errors.price}
                 />
-                {errors.price && <span className="form-error">{errors.price}</span>}
-              </div>
+                <Form.Control.Feedback type="invalid">{errors.price}</Form.Control.Feedback>
+              </Form.Group>
+            </Col>
 
-              <div className="form-group">
-                <label htmlFor="product-stock">Stock *</label>
-                <input
-                  id="product-stock"
+            <Col sm={6}>
+              <Form.Group controlId="product-stock">
+                <Form.Label>Stock *</Form.Label>
+                <Form.Control
                   type="number"
                   name="stock"
                   value={form.stock}
@@ -129,37 +126,42 @@ const ProductModal = ({ isOpen, onClose, onSave, product, providers = [], saving
                   placeholder="0"
                   min="0"
                   step="1"
-                  className={errors.stock ? 'input-error' : ''}
+                  isInvalid={!!errors.stock}
                 />
-                {errors.stock && <span className="form-error">{errors.stock}</span>}
-              </div>
-            </div>
+                <Form.Control.Feedback type="invalid">{errors.stock}</Form.Control.Feedback>
+              </Form.Group>
+            </Col>
+          </Row>
 
-            <div className="form-group">
-              <label htmlFor="product-provider">Proveedor *</label>
-              <select
-                id="product-provider"
-                name="providerId"
-                value={form.providerId}
-                onChange={handleChange}
-                className={errors.providerId ? 'input-error' : ''}
-              >
-                <option value="">Selecciona un proveedor</option>
-                {providers.map((provider) => (
-                  <option key={provider.id} value={provider.id}>{provider.name}</option>
-                ))}
-              </select>
-              {errors.providerId && <span className="form-error">{errors.providerId}</span>}
-            </div>
-          </div>
+          <Form.Group className="mb-3" controlId="product-provider">
+            <Form.Label>Proveedor *</Form.Label>
+            <Form.Select
+              name="providerId"
+              value={form.providerId}
+              onChange={handleChange}
+              isInvalid={!!errors.providerId}
+            >
+              <option value="">Selecciona un proveedor</option>
+              {providers.map((provider) => (
+                <option key={provider.id} value={provider.id}>
+                  {provider.name}
+                </option>
+              ))}
+            </Form.Select>
+            <Form.Control.Feedback type="invalid">{errors.providerId}</Form.Control.Feedback>
+          </Form.Group>
+        </Modal.Body>
 
-          <div className="modal-footer">
-            <button type="button" className="secondary" onClick={onClose} disabled={saving}>Cancelar</button>
-            <button type="submit" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onClose} disabled={saving}>
+            Cancelar
+          </Button>
+          <Button variant="primary" type="submit" disabled={saving}>
+            {saving ? 'Guardando...' : 'Guardar'}
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
   );
 };
 
