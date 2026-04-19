@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Table, Button, Badge, Form, Alert } from 'react-bootstrap';
 import ProductModal from '../components/ProductModal';
 import ConfirmDialog from '../components/ConfirmDialog';
 import { productService } from '../services/productService';
@@ -7,9 +8,9 @@ import { formatCurrency, getErrorMessage } from '../utils/formatters';
 
 const StockBadge = ({ stock }) => {
   const numericStock = Number(stock || 0);
-  if (numericStock === 0) return <span className="badge badge-danger">Sin stock</span>;
-  if (numericStock < 20) return <span className="badge badge-warning">Bajo ({numericStock})</span>;
-  return <span className="badge badge-success">{numericStock}</span>;
+  if (numericStock === 0) return <Badge bg="danger">Sin stock</Badge>;
+  if (numericStock < 20) return <Badge bg="warning" text="dark">Bajo ({numericStock})</Badge>;
+  return <Badge bg="success">{numericStock}</Badge>;
 };
 
 const Products = () => {
@@ -108,24 +109,26 @@ const Products = () => {
 
   return (
     <div>
-      <div className="header-actions">
+      <div className="d-flex justify-content-between align-items-md-center flex-column flex-md-row mb-4 gap-3">
         <div>
-          <h2 style={{ marginBottom: '0.25rem' }}>Productos</h2>
-          <p style={{ margin: 0 }}>Administra el inventario y su proveedor asociado.</p>
+          <h2 className="mb-1 text-dark fw-bold">Productos</h2>
+          <p className="m-0 text-muted">Administra el inventario y su proveedor asociado.</p>
         </div>
-        <button onClick={openCreateModal} disabled={providers.length === 0}>+ Crear producto</button>
+        <Button variant="primary" onClick={openCreateModal} disabled={providers.length === 0}>
+          + Crear producto
+        </Button>
       </div>
 
       {providers.length === 0 && !loading && (
-        <div className="alert alert-warning">
+        <Alert variant="warning">
           Primero debes crear al menos un proveedor para poder registrar productos.
-        </div>
+        </Alert>
       )}
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <Alert variant="danger">{error}</Alert>}
 
-      <div className="search-bar" style={{ marginBottom: '1rem' }}>
-        <input
+      <div className="mb-4">
+        <Form.Control
           type="text"
           placeholder="Buscar por nombre, descripción o proveedor"
           value={search}
@@ -133,39 +136,41 @@ const Products = () => {
         />
       </div>
 
-      <div className="table-container">
+      <div className="table-responsive bg-white rounded shadow-sm border">
         {loading ? (
-          <p className="empty-state">Cargando productos...</p>
+          <div className="text-center p-5 text-muted">Cargando productos...</div>
         ) : filteredProducts.length === 0 ? (
-          <p className="empty-state">No se encontraron productos.</p>
+          <div className="text-center p-5 text-muted">No se encontraron productos.</div>
         ) : (
-          <table>
-            <thead>
+          <Table hover className="m-0 align-middle">
+            <thead className="table-light">
               <tr>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Proveedor</th>
-                <th>Acciones</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Nombre</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Descripción</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Precio</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Stock</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Proveedor</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {filteredProducts.map((product) => (
                 <tr key={product.id}>
-                  <td style={{ fontWeight: 500 }}>{product.name}</td>
-                  <td className="truncate-cell">{product.description || '—'}</td>
+                  <td className="fw-medium">{product.name}</td>
+                  <td className="text-truncate" style={{ maxWidth: '220px' }}>{product.description || '—'}</td>
                   <td>{formatCurrency(product.price)}</td>
                   <td><StockBadge stock={product.stock} /></td>
                   <td>{product.provider?.name || '—'}</td>
-                  <td className="actions-cell">
-                    <button className="secondary compact" onClick={() => openEditModal(product)}>Editar</button>
-                    <button className="danger compact" onClick={() => requestDelete(product)}>Eliminar</button>
+                  <td>
+                    <div className="d-flex gap-2">
+                      <Button variant="outline-secondary" size="sm" onClick={() => openEditModal(product)}>Editar</Button>
+                      <Button variant="outline-danger" size="sm" onClick={() => requestDelete(product)}>Eliminar</Button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
       </div>
 

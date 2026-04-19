@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 
 const EMPTY_FORM = {
   name: '',
@@ -24,8 +25,6 @@ const ProviderModal = ({ isOpen, onClose, onSave, provider, saving = false }) =>
     }
     setErrors({});
   }, [provider, isOpen]);
-
-  if (!isOpen) return null;
 
   const validate = () => {
     const newErrors = {};
@@ -59,77 +58,78 @@ const ProviderModal = ({ isOpen, onClose, onSave, provider, saving = false }) =>
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3>{provider ? 'Editar proveedor' : 'Crear proveedor'}</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Cerrar">×</button>
-        </div>
+    <Modal show={isOpen} onHide={onClose} backdrop="static" centered>
+      <Modal.Header closeButton>
+        <Modal.Title>{provider ? 'Editar proveedor' : 'Crear proveedor'}</Modal.Title>
+      </Modal.Header>
 
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="modal-body">
-            <div className="form-group">
-              <label htmlFor="provider-name">Nombre *</label>
-              <input
-                id="provider-name"
-                name="name"
-                type="text"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Ej. Distribuidora Central"
-                className={errors.name ? 'input-error' : ''}
-              />
-              {errors.name && <span className="form-error">{errors.name}</span>}
-            </div>
+      <Form onSubmit={handleSubmit} noValidate>
+        <Modal.Body>
+          <Form.Group className="mb-3" controlId="provider-name">
+            <Form.Label>Nombre *</Form.Label>
+            <Form.Control
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Ej. Distribuidora Central"
+              isInvalid={!!errors.name}
+            />
+            <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
+          </Form.Group>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="provider-phone">Teléfono</label>
-                <input
-                  id="provider-phone"
-                  name="phone"
+          <Row className="mb-3">
+            <Col sm={6}>
+              <Form.Group controlId="provider-phone">
+                <Form.Label>Teléfono</Form.Label>
+                <Form.Control
                   type="text"
+                  name="phone"
                   value={form.phone}
                   onChange={handleChange}
                   placeholder="Ej. 3001234567"
                 />
-              </div>
+              </Form.Group>
+            </Col>
 
-              <div className="form-group">
-                <label htmlFor="provider-city">Ciudad</label>
-                <input
-                  id="provider-city"
-                  name="city"
+            <Col sm={6}>
+              <Form.Group controlId="provider-city">
+                <Form.Label>Ciudad</Form.Label>
+                <Form.Control
                   type="text"
+                  name="city"
                   value={form.city}
                   onChange={handleChange}
                   placeholder="Ej. Bogotá"
                 />
-              </div>
-            </div>
+              </Form.Group>
+            </Col>
+          </Row>
 
-            <div className="form-group">
-              <label htmlFor="provider-email">Correo</label>
-              <input
-                id="provider-email"
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="proveedor@correo.com"
-                className={errors.email ? 'input-error' : ''}
-              />
-              {errors.email && <span className="form-error">{errors.email}</span>}
-            </div>
-          </div>
+          <Form.Group className="mb-3" controlId="provider-email">
+            <Form.Label>Correo</Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="proveedor@correo.com"
+              isInvalid={!!errors.email}
+            />
+            <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+          </Form.Group>
+        </Modal.Body>
 
-          <div className="modal-footer">
-            <button type="button" className="secondary" onClick={onClose} disabled={saving}>Cancelar</button>
-            <button type="submit" disabled={saving}>{saving ? 'Guardando...' : 'Guardar'}</button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={onClose} disabled={saving}>
+            Cancelar
+          </Button>
+          <Button variant="primary" type="submit" disabled={saving}>
+            {saving ? 'Guardando...' : 'Guardar'}
+          </Button>
+        </Modal.Footer>
+      </Form>
+    </Modal>
   );
 };
 

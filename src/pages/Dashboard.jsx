@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Alert, Card, Row, Col } from 'react-bootstrap';
 import { productService } from '../services/productService';
 import { providerService } from '../services/providerService';
 import { userService } from '../services/userService';
@@ -38,33 +39,47 @@ const Dashboard = () => {
 
   return (
     <div>
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <Alert variant="danger">{error}</Alert>}
 
-      <div className="dashboard-grid">
-        <div className="card">
-          <h3 className="stat-label">Productos registrados</h3>
-          <p className="stat-value">{loading ? '...' : summary.products}</p>
-          <span className="stat-note">{summary.outOfStock} sin stock</span>
-        </div>
+      <Row className="mb-4 g-4">
+        <Col md={4} sm={12}>
+          <Card className="h-100 shadow-sm border-0">
+            <Card.Body>
+              <h6 className="text-muted text-uppercase fw-bold mb-3" style={{ fontSize: '0.85rem', letterSpacing: '0.05em' }}>Productos registrados</h6>
+              <h2 className="display-5 fw-bold text-dark mb-1">{loading ? '...' : summary.products}</h2>
+              <small className="text-muted">{summary.outOfStock} sin stock</small>
+            </Card.Body>
+          </Card>
+        </Col>
 
-        <div className="card">
-          <h3 className="stat-label">Proveedores</h3>
-          <p className="stat-value">{loading ? '...' : summary.providers}</p>
-          <span className="stat-note">Conectados desde el backend</span>
-        </div>
+        <Col md={4} sm={12}>
+          <Card className="h-100 shadow-sm border-0">
+            <Card.Body>
+              <h6 className="text-muted text-uppercase fw-bold mb-3" style={{ fontSize: '0.85rem', letterSpacing: '0.05em' }}>Proveedores</h6>
+              <h2 className="display-5 fw-bold text-dark mb-1">{loading ? '...' : summary.providers}</h2>
+              <small className="text-muted">Conectados desde el backend</small>
+            </Card.Body>
+          </Card>
+        </Col>
 
-        <div className="card">
-          <h3 className="stat-label">Usuarios</h3>
-          <p className="stat-value">{loading ? '...' : summary.users}</p>
-          <span className="stat-note">Activos e inactivos</span>
-        </div>
-      </div>
+        <Col md={4} sm={12}>
+          <Card className="h-100 shadow-sm border-0">
+            <Card.Body>
+              <h6 className="text-muted text-uppercase fw-bold mb-3" style={{ fontSize: '0.85rem', letterSpacing: '0.05em' }}>Usuarios</h6>
+              <h2 className="display-5 fw-bold text-dark mb-1">{loading ? '...' : summary.users}</h2>
+              <small className="text-muted">Activos e inactivos</small>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
-      <div className="card">
-        <h3>Resumen de Ventas</h3>
-        <p>Total de ventas: 0</p>
-        <p>Productos vendidos: 0</p>
-      </div>
+      <Card className="shadow-sm border-0">
+        <Card.Body className="p-4">
+          <Card.Title className="fw-bold mb-3">Resumen de Ventas</Card.Title>
+          <Card.Text className="text-muted mb-1">Total de ventas: 0</Card.Text>
+          <Card.Text className="text-muted">Productos vendidos: 0</Card.Text>
+        </Card.Body>
+      </Card>
     </div>
   );
 };

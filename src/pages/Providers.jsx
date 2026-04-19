@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Table, Button, Form, Alert } from 'react-bootstrap';
 import ConfirmDialog from '../components/ConfirmDialog';
 import ProviderModal from '../components/ProviderModal';
 import { providerService } from '../services/providerService';
@@ -94,18 +95,18 @@ const Providers = () => {
 
   return (
     <div>
-      <div className="header-actions">
+      <div className="d-flex justify-content-between align-items-md-center flex-column flex-md-row mb-4 gap-3">
         <div>
-          <h2 style={{ marginBottom: '0.25rem' }}>Proveedores</h2>
-          <p style={{ margin: 0 }}>Administra los proveedores que abastecen tus productos.</p>
+          <h2 className="mb-1 text-dark fw-bold">Proveedores</h2>
+          <p className="m-0 text-muted">Administra los proveedores que abastecen tus productos.</p>
         </div>
-        <button onClick={openCreateModal}>+ Crear proveedor</button>
+        <Button variant="primary" onClick={openCreateModal}>+ Crear proveedor</Button>
       </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <Alert variant="danger">{error}</Alert>}
 
-      <div className="search-bar" style={{ marginBottom: '1rem' }}>
-        <input
+      <div className="mb-4">
+        <Form.Control
           type="text"
           placeholder="Buscar por nombre, teléfono, correo o ciudad"
           value={search}
@@ -113,37 +114,39 @@ const Providers = () => {
         />
       </div>
 
-      <div className="table-container">
+      <div className="table-responsive bg-white rounded shadow-sm border">
         {loading ? (
-          <p className="empty-state">Cargando proveedores...</p>
+          <div className="text-center p-5 text-muted">Cargando proveedores...</div>
         ) : filteredProviders.length === 0 ? (
-          <p className="empty-state">No se encontraron proveedores.</p>
+          <div className="text-center p-5 text-muted">No se encontraron proveedores.</div>
         ) : (
-          <table>
-            <thead>
+          <Table hover className="m-0 align-middle">
+            <thead className="table-light">
               <tr>
-                <th>Nombre</th>
-                <th>Teléfono</th>
-                <th>Correo</th>
-                <th>Ciudad</th>
-                <th>Acciones</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Nombre</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Teléfono</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Correo</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Ciudad</th>
+                <th className="text-uppercase text-secondary" style={{ fontSize: '0.85rem' }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {filteredProviders.map((provider) => (
                 <tr key={provider.id}>
-                  <td style={{ fontWeight: 500 }}>{provider.name}</td>
+                  <td className="fw-medium">{provider.name}</td>
                   <td>{provider.phone || '—'}</td>
                   <td>{provider.email || '—'}</td>
                   <td>{provider.city || '—'}</td>
-                  <td className="actions-cell">
-                    <button className="secondary compact" onClick={() => openEditModal(provider)}>Editar</button>
-                    <button className="danger compact" onClick={() => requestDelete(provider)}>Eliminar</button>
+                  <td>
+                    <div className="d-flex gap-2">
+                      <Button variant="outline-secondary" size="sm" onClick={() => openEditModal(provider)}>Editar</Button>
+                      <Button variant="outline-danger" size="sm" onClick={() => requestDelete(provider)}>Eliminar</Button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
       </div>
 
