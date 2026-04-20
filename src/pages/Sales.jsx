@@ -73,7 +73,6 @@ const handleSave = async (data) => {
   try {
     const rawDetails = data.details || data.items || [];
 
-    // 🔥 TRANSFORMACIÓN CORRECTA
     const details = rawDetails
       .map(d => ({
         productId: d.productId || d.product?.id,
@@ -81,7 +80,6 @@ const handleSave = async (data) => {
       }))
       .filter(d => d.productId && d.quantity > 0);
 
-    // 🚨 VALIDACIÓN CLAVE (ESTO EVITA EL ERROR)
     if (details.length === 0) {
       setError('Debes agregar al menos un producto válido');
       setSaving(false);

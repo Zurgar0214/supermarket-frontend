@@ -1,17 +1,27 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-const SaleModal = ({ isOpen, onClose, onSave, products, users, saving }) => {
+const SaleModal = ({ isOpen, onClose, onSave, sale, products, users, saving }) => {
   const [selectedUser, setSelectedUser] = useState('');
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    if (isOpen) {
+  if (isOpen) {
+    if (sale) {
+      setSelectedUser(sale.user?.id || '');
+
+      const formattedItems = sale.saleDetails?.map(d => ({
+        productId: d.product?.id,
+        quantity: d.quantity
+      })) || [];
+
+      setItems(formattedItems);
+    } else {
       setSelectedUser('');
       setItems([]);
     }
-  }, [isOpen]);
-
+  }
+}, [isOpen, sale]);
   const addItem = () => {
     setItems([...items, { productId: '', quantity: 1 }]);
   };
