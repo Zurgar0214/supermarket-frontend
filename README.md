@@ -102,6 +102,16 @@ Propiedades tomadas del backend:
 - `role`
 - `isActive`
 
+### Ventas
+
+Propiedades tomadas del backend:
+
+- `id`
+- `total`
+- `createdAt`
+- `user.name` cuando el backend incluye la relación del usuario
+- `saleDetails` arreglo con los ítems (incluye `quantity` y `product.name`)
+
 
 ## Tecnologías utilizadas
 
