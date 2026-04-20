@@ -30,7 +30,7 @@ const SaleModal = ({ isOpen, onClose, onSave, products, users, saving }) => {
 
     onSave({
       userId: selectedUser,
-      products: items,
+      items: items,
     });
   };
 
