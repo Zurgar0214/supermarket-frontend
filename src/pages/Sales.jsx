@@ -141,7 +141,7 @@ const handleSave = async (data) => {
           <p className="text-muted">Gestiona las ventas del sistema</p>
         </div>
 
-        <Button onClick={openCreateModal}>
+        <Button  variant="primary" onClick={openCreateModal}>
           + Crear venta
         </Button>
       </div>
