@@ -135,7 +135,7 @@ const handleSave = async (data) => {
   return (
     <div>
       {/* HEADER */}
-      <div className="d-flex justify-content-between mb-4">
+      <div className="d-flex justify-content-between align-items-md-center flex-column flex-md-row mb-4 gap-3">
         <div>
           <h2 className="fw-bold">Ventas</h2>
           <p className="text-muted">Gestiona las ventas del sistema</p>
