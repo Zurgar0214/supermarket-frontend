@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Alert, Card, Row, Col } from 'react-bootstrap';
+import { Alert, Card, Col, Row } from 'react-bootstrap';
 import { productService } from '../services/productService';
 import { providerService } from '../services/providerService';
+import { saleService } from '../services/saleService';
 import { userService } from '../services/userService';
 import { getErrorMessage } from '../utils/formatters';
 
@@ -15,18 +16,31 @@ const Dashboard = () => {
       setLoading(true);
       setError('');
       try {
-        const [products, providers, users] = await Promise.all([
+        const [products, providers, users, sales] = await Promise.all([
           productService.getAll(),
           providerService.getAll(),
           userService.getAll(),
+          saleService.getAll(),
         ]);
 
-        setSummary({
-          products: products.length,
-          providers: providers.length,
-          users: users.length,
-          outOfStock: products.filter((product) => Number(product.stock || 0) === 0).length,
-        });
+    const totalSales = sales.length;
+
+    const totalProductsSold = sales.reduce((acc, sale) => {
+      const count = (sale.saleDetails || []).reduce(
+        (sum, d) => sum + Number(d.quantity || 0),
+        0
+      );
+      return acc + count;
+    }, 0);
+
+    setSummary({
+      products: products.length,
+      providers: providers.length,
+      users: users.length,
+      outOfStock: products.filter((product) => Number(product.stock || 0) === 0).length,
+      totalSales,
+      totalProductsSold,
+    });
       } catch (requestError) {
         setError(getErrorMessage(requestError));
       } finally {
@@ -76,8 +90,8 @@ const Dashboard = () => {
       <Card className="shadow-sm border-0">
         <Card.Body className="p-4">
           <Card.Title className="fw-bold mb-3">Resumen de Ventas</Card.Title>
-          <Card.Text className="text-muted mb-1">Total de ventas: 0</Card.Text>
-          <Card.Text className="text-muted">Productos vendidos: 0</Card.Text>
+          <Card.Text className="text-muted mb-1">Total de ventas: {loading ? '...' : summary.totalSales}</Card.Text>
+          <Card.Text className="text-muted">  Productos vendidos: {loading ? '...' : summary.totalProductsSold}</Card.Text>
         </Card.Body>
       </Card>
     </div>
